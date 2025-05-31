@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Toko Elektronik Welman Saputra</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      background-color: #0cd5f0;
+      padding: 20px;
+    }
+    header {
+      background-color: #450555;
+      color: white;
+      padding: 20px 0;
+      text-align: center;
+      position: relative;
+    }
+    .product-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      justify-content: center;
+      margin-top: 30px;
+    }
+    .product-card {
+      background-color: white;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      width: 300px;
+      padding: 20px;
+      text-align: center;
+      transition: transform 0.3s;
+    }
+    .product-card:hover { transform: scale(1.03); }
+    .product-card img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      border-radius: 10px;
+    }
+    .price {
+      color: #e74c3c;
+      font-size: 18px;
+      font-weight: bold;
+    }
+    .rating {
+      color: #f1c40f;
+      margin-bottom: 10px;
+    }
+    .btn {
+      background-color: #27ae60;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .btn:hover {
+      background-color: #219150;
+    }
+    #cart {
+      background-color: white;
+      padding: 20px;
+      margin: 30px auto;
+      width: 90%;
+      max-width: 600px;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      display: none;
+    }
+    #cart h2, h3 {
+      border-bottom: 1px solid #ddd;
+      padding-bottom: 5px;
+    }
+    #cart ul {
+      list-style-type: none;
+      padding: 0;
+    }
+    #cart li {
+      padding: 10px 0;
+      border-bottom: 1px solid #ddd;
+    }
+    .form-section {
+      margin-top: 20px;
+    }
+    input, textarea, select {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      margin-bottom: 15px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+    .contact-info {
+      margin-top: 30px;
+      background-color: #fff;
+      padding: 15px;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    /* Tambahan untuk tombol di pojok kanan bawah */
+    .cart-button-fixed {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 1000;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Toko Elektronik Welman Saputra</h1>
+  <p>Temukan produk terbaik dengan harga terjangkau!</p>
+</header>
+
+<!-- Tombol di pojok kanan bawah -->
+<button class="btn cart-button-fixed" onclick="toggleCart()">🛒 Lihat Keranjang</button>
+
+<div class="product-grid">
+  <!-- Produk 1 -->
+  <div class="product-card">
+    <img src="JETE-08-PRO-6.jpg" alt="Headphone Wireless Pro">
+    <h3>Headphone Wireless Pro</h3>
+    <p class="price">Rp 399.000</p>
+    <p class="rating">★★★★★ (4.8)</p>
+    <p>Headphone berkualitas tinggi dengan suara jernih, bluetooth, dan baterai 20 jam.</p>
+    <button class="btn" onclick="addToCart('Headphone Wireless Pro', 399000)">Beli Sekarang</button>
+  </div>
+
+  <!-- Produk 2 -->
+  <div class="product-card">
+    <img src="x-spring.jpg" alt="Smartwatch Fitness X">
+    <h3>Smartwatch Fitness X</h3>
+    <p class="price">Rp 499.000</p>
+    <p class="rating">★★★★☆ (4.5)</p>
+    <p>Smartwatch dengan sensor detak jantung dan notifikasi real-time.</p>
+    <button class="btn" onclick="addToCart('Smartwatch Fitness X', 499000)">Beli Sekarang</button>
+  </div>
+
+  <!-- Produk 3 -->
+  <div class="product-card">
+    <img src="camera.jpg" alt="Kamera Action 4K">
+    <h3>Kamera Action 4K Ultra</h3>
+    <p class="price">Rp 899.000</p>
+    <p class="rating">★★★★☆ (4.6)</p>
+    <p>Kamera tahan air, 4K, slow motion 120fps.</p>
+    <button class="btn" onclick="addToCart('Kamera Action 4K Ultra', 899000)">Beli Sekarang</button>
+  </div>
+</div>
+
+<div id="cart">
+  <h2>🛒 Keranjang Belanja</h2>
+  <ul id="cart-items"></ul>
+
+  <div class="form-section">
+    <h3>💰 Total Belanja</h3>
+    <p id="total">Total: Rp 0</p>
+  </div>
+
+  <div class="form-section">
+    <h3>📋 Data Pelanggan</h3>
+    <input type="text" id="customer-name" placeholder="Nama Lengkap" required>
+    <input type="text" id="customer-phone" placeholder="Nomor Telepon" required>
+    <input type="email" id="customer-email" placeholder="Email" required>
+    <textarea id="customer-address" placeholder="Alamat Lengkap" required></textarea>
+  </div>
+
+  <div class="form-section" id="payment-method" style="display: none;">
+    <h3>💳 Pilih Metode Pembayaran</h3>
+    <select id="payment-option">
+      <option value="">-- Pilih --</option>
+      <option value="BRI">Bank BRI</option>
+      <option value="BCA">Bank BCA</option>
+      <option value="DANA">DANA</option>
+      <option value="GOPAY">GoPay</option>
+      <option value="VA">Virtual Account</option>
+    </select>
+    <button class="btn" onclick="confirmPayment()">Konfirmasi Pembayaran</button>
+  </div>
+
+  <button class="btn" onclick="showPaymentMethod()">Checkout</button>
+</div>
+
+<div class="contact-info">
+  <h3>📞 Kontak & Alamat Toko</h3>
+  <p><strong>Admin WA:</strong> <a href="https://wa.me/6281214186832" target="_blank">+62 812-1418-6832</a></p>
+  <p><strong>Email:</strong> <a href="mailto:swelman162@gmail.com">swelman162@gmail.com</a></p>
+  <p><strong>Alamat Toko:</strong> jln. Lingkar no.51 sengkol muncul </p>
+</div>
+
+<script>
+  const cart = [];
+
+  function addToCart(name, price) {
+    cart.push({ name, price });
+    alert('Produk ditambahkan ke keranjang!');
+    updateCartDisplay();
+  }
+
+  function updateCartDisplay() {
+    const cartItems = document.getElementById('cart-items');
+    const total = document.getElementById('total');
+    cartItems.innerHTML = '';
+    let totalPrice = 0;
+    cart.forEach(item => {
+      const li = document.createElement('li');
+      li.textContent = `${item.name} - Rp ${item.price.toLocaleString('id-ID')}`;
+      cartItems.appendChild(li);
+      totalPrice += item.price;
+    });
+    total.textContent = `Total: Rp ${totalPrice.toLocaleString('id-ID')}`;
+  }
+
+  function toggleCart() {
+    const cartDiv = document.getElementById('cart');
+    cartDiv.style.display = cartDiv.style.display === 'none' ? 'block' : 'none';
+  }
+
+  function showPaymentMethod() {
+    if (cart.length === 0) {
+      alert("Keranjang masih kosong!");
+      return;
+    }
+    document.getElementById('payment-method').style.display = 'block';
+  }
+
+  function confirmPayment() {
+    const method = document.getElementById('payment-option').value;
+    const name = document.getElementById('customer-name').value.trim();
+    const phone = document.getElementById('customer-phone').value.trim();
+    const email = document.getElementById('customer-email').value.trim();
+    const address = document.getElementById('customer-address').value.trim();
+
+    if (!method || !name || !phone || !email || !address) {
+      alert("Mohon lengkapi semua data pelanggan dan pilih metode pembayaran.");
+      return;
+    }
+
+    alert(`Pembayaran berhasil menggunakan ${method}.\nTerima kasih, ${name}! Kami akan mengirim ke:\n${address}`);
+    
+    // Reset
+    cart.length = 0;
+    updateCartDisplay();
+    document.getElementById('payment-method').style.display = 'none';
+    toggleCart();
+  }
+</script>
+</body>
+</html>
